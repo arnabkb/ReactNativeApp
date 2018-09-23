@@ -1,0 +1,62 @@
+# OSX #
+.DS_Store
+
+# VSCode #
+jsconfig.json
+.vscode/
+yarn.lock
+package-lock.json
+
+# node.js #
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK #
+buck-out/
+\.buckd/
+*.keystore
+
+# fastlane #
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Bundle artifact #
+*.jsbundle
+
+# Android/IntelliJ
+build/
+.gradle/
+.idea/
+local.properties
+*.iml
+.signing
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode #
+build/
+Pods/
+Podfile.lock
+DerivedData
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
