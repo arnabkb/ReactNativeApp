@@ -1,57 +1,55 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '9.3'
+DEPLOYMENT_TARGET = '9.3'
 
-target 'ReactNativeApp' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
+platform :ios, DEPLOYMENT_TARGET
 
-  # Pods for ReactNativeApp
+def install_pods
+    # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+    # use_frameworks!
 
-  # Your 'node_modules' directory is probably in the root of your project,
-  # but if not, adjust the `:path` accordingly
-  pod 'React', :path => '../node_modules/react-native', :subspecs => [
-    'Core',
-    'cxxreact',
-    'CxxBridge', # Include this for RN >= 0.47
-    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
-    'RCTText',
-    'RCTNetwork',
-    'RCTWebSocket', # Needed for debugging
-    'RCTAnimation', # Needed for FlatList and animations running on native UI thread
-    'RCTActionSheet',
-    'RCTBlob',
-    'RCTGeolocation',
-    'RCTImage',
-    'RCTLinkingIOS',
-    'RCTSettings',
-    'RCTVibration',
-    # Add any other subspecs you want to use in your project
-  ]
+    # Pods for ReactNativeApp
 
-  # Explicitly include Yoga if you are using RN >= 0.42.0
-  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+    # Your 'node_modules' directory is probably in the root of your project,
+    # but if not, adjust the `:path` accordingly
+    react_native_path = '../node_modules/react-native'
+    
+    # Explicitly include Yoga if you are using RN >= 0.42.0
+    pod 'yoga', :path => react_native_path + '/ReactCommon/yoga'
+    
+    # Third party deps
+    pod 'DoubleConversion', :podspec => react_native_path + '/third-party-podspecs/DoubleConversion.podspec'
+    pod 'glog', :podspec => react_native_path + '/third-party-podspecs/glog.podspec'
+    pod 'Folly', :podspec => react_native_path + '/third-party-podspecs/Folly.podspec'
 
-  # Third party deps
-  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
-  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  target 'ReactNativeAppTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
+    pod 'React', :path => react_native_path, :subspecs => [
+        'Core',
+        'CxxBridge', # Include this for RN >= 0.47
+        'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+        'RCTText',
+        'RCTImage',
+        'RCTNetwork',
+        'RCTWebSocket', # Needed for debugging
+        'RCTAnimation', # Needed for FlatList and animations running on native UI thread
+        # Add any other subspecs you want to use in your project
+    ]
 end
 
-target 'ReactNativeApp-tvOS' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
+target 'ReactNativeApp' do
+    install_pods
+end
 
-  # Pods for ReactNativeApp-tvOS
-
-  target 'ReactNativeApp-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
+post_install do |installer|
+    installer.pod_targets.each do |target|
+        if target.native_target
+            print("Setting Deployment target to: " + target.pod_name + "\n")
+            target.native_target.build_configurations.each do |config|
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = DEPLOYMENT_TARGET
+            end
+        end
+    end
+    installer.pods_project.targets.each do |target|
+        if target.name == "React"
+            target.remove_from_project
+        end
+    end
 end
